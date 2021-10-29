@@ -1,0 +1,37 @@
+---
+title: "Week 3 HW"
+author: "Ashley James"
+date: "10/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#load packages
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(skimr)
+
+```
+#import dataset
+#this is a dataset from the NYC Department of Heath and human services on blood lead levels for children under 6. I manually cleaned the variable names because they very very long and detailed. 
+```{r}
+leadclean<- read_csv("leadclean.csv")
+```
+
+#use the filter and selcect functions to select only observations in Manhattan 
+```{r}
+leadclean %>% 
+  filter(geo_area_name == "Manhattan") %>% 
+  select(geo_area_name)
+```
+#Use filter to isoltae only the four boroughs in geo_area_name. Then group by geo_area_name. Then summarize by the mean bll5, which is the number of children under 6 with blood lead levels of 5 or greater. 
+```{r}
+avg_bll5_by_geo<- leadclean %>% 
+  filter(geo_area_name %in% c("Manhattan" , "Brooklyn", "Queens", "Bronx", "Staten Island")) %>% 
+  group_by(geo_area_name) %>% 
+  summarise (meanbll5 = mean(bll5, na.rm = TRUE))
+```

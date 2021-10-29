@@ -1,0 +1,26 @@
+---
+title: "Week 2 HW: Project Introduction"
+author: "Ashley James"
+date: "9/22/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Project Introduction 
+
+The  **New York State Environemntal Carcinogens Action Team**, is a group consisting of several environemntal leaders in NYS, including WE ACT for environemntal Justice. The action team has three working groups: 
+
+- Modeling Working Group 
+- Education and Communication Working Group 
+- Policy Working Group 
+
+This report outlines some initial analyis performed by the **modeling working group**. The goal of the modeling working group is to identify potential environemntal carcinogens to support preventitive action for cancers with high incidence including but not limited to: 
+
+- Lung cancer 
+- Breast Cancer 
+- Colorectal Cancer 
+
+The modeling working group uses public environmental and cancer data to test the association of given risk factors with cancer diagnosis. 

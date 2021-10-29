@@ -1,0 +1,41 @@
+---
+title: "Week 4 HW"
+author: "Ashley James"
+date: "10/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#load tidyverse package and read in the clean lead dataset 
+```{r}
+library(tidyverse)
+leadclean <- read_csv("leadclean.csv")yes
+```
+
+#Wrangle data in the smae way as last week. I created a dataset with the average number of children under 6 with blood lead levels of 5 or greater by borough in NYC. 
+```{r}
+avg_bll5_by_geo<- leadclean %>% 
+  filter(geo_area_name %in% c("Manhattan" , "Brooklyn", "Queens", "Bronx", "Staten Island")) %>% 
+  group_by(geo_area_name) %>% 
+  summarise (meanbll5 = mean(bll5, na.rm = TRUE))
+```
+
+#I now want to make a bar graph visualizing this so I can see which borough has the highested number of children under 6 with eleveated blood lead levels. 
+```{r}
+ggplot(data = avg_bll5_by_geo, 
+       mapping = aes( x = geo_area_name, y = meanbll5)) + 
+geom_col()
+```
+
+#I want to make this graph look better so I am going to add colors, change vairble names, and add a title. 
+```{r}
+ggplot(data = avg_bll5_by_geo, 
+       mapping = aes( x = geo_area_name, y = meanbll5, fill = geo_area_name)) + 
+geom_col() + 
+labs(title = "Avergae Number of Children With Elevated Blood Levels by Borough", y = "Mean children with elevated lead", x = "Borough") +
+scale_color_brewer("Accent")
+
+```
