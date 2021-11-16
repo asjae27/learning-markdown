@@ -35,10 +35,11 @@ view(child_mortality_clean)
 child_mortality_tidy<-child_mortality_clean %>% 
   select(country_name, uncertainty_bounds, contains("U5MR")) %>%
    pivot_longer(cols = u5mr_1950 : u5mr_2015, 
-                names_to = "type_year", 
+                names_to = "year", 
                 values_to = "count") %>% 
-  mutate(count = replace_na(count, 0)) 
-View(child_mortality_tidy)
+  separate(year, sep = "_", into =c("type" , "year")) %>% 
+  mutate(count = replace_na(count, 0))
+view(child_mortality_tidy)
 
 ```
 
