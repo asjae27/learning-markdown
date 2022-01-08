@@ -49,7 +49,7 @@ scale_y_continuous(limits = c(0, 16000),
 scale_x_continuous(breaks = c(2005,2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 )) +
 scale_color_manual(values = pal) + 
 labs(title = "While the average number of children with elevated blood lead levels has decreased in every borough from 2005 to 2016,<br>
-     <span style='color:#02401B'>Brooklyn</span> continues to have the highest numbers", y = "Mean Children with Elevated Bllod Lead Levels", x = "Year") +
+     <span style='color:#D8B70A'>Brooklyn</span> continues to have the highest numbers", y = "Mean Children with Elevated Bllod Lead Levels", x = "Year") +
 theme_minimal() +
 theme(plot.title = element_markdown()) 
 
