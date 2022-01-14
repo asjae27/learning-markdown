@@ -1,0 +1,136 @@
+---
+title: "Elevated Child Blood Lead Levels 2005-2016"
+author: "Ashley James"
+output:
+  word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(wesanderson)
+library(ggrepel)
+library(ggtext)
+library(extrafont)
+library(gt)
+```
+# Introduction 
+This report explores data from [NYC Open Data](https://opendata.cityofnewyork.us/) on the number of children under the age of 6 with elevated blood lead levels (BLL) from 2005-2016 in New York City. This data captures children with BLL of 5 micrograms per deciliter (ug/dl) because this was the reference level at the time of data collection. However, as of May, 2021 science and health experts have lowered the reference level to 3.5 ug/dl.
+
+That being said, lead is highly toxic, and there is no known safe level of lead. Lead is particularly harmful to children's health as it damages the brain and nervous system, slows growth and development and causes learning, behavioral, speech and nervous system issues. This leads to children having lower performance in schools and a lower IQ. 
+
+# Methods and Results 
+
+This report is a way for me to learn how to use R, while exploring some data that is interesting to me and relevant to my work and career as an Environmental Health Coordinator at [WE ACT for Environmental Justice](https://www.weact.org/). Throughout the R in 3 months course, I learned how to turn messy /raw data into beautiful charts and graphs that communicate a message. I learned how to import data in different formats, clean the variable names, "wrangle" the data, or change it to get only the variables and comparisons of interest, "tidy" the data to ensure the variables are named and assigned correctly, and then finally visually display my data in graphs and tables. In the following Results section you will see some of the outputs I created using the skills I learned throughout the course. 
+
+# Results 
+
+
+```{r, echo=FALSE, fig.cap="Graphing the average number of children with BLL of 5ug/dl or higher by borough in NYC."}
+#make an object with we anderson palette 
+pal <- wes_palette("Cavalcanti1" , 5, "discrete")
+
+#make bar chart 
+bll5_complete <- readRDS("data/avg_bll5_by_borough_complete.rds")
+
+gg_avg_levels_by_borough <- bll5_complete %>% 
+  summarise(mean_over_years_bll5 = mean(meanbll5)) %>% 
+  ggplot(mapping = aes( x = reorder(Borough, mean_over_years_bll5),
+                      y = mean_over_years_bll5, fill = Borough)) + 
+  geom_col() + 
+  scale_fill_manual(values = pal) + 
+  # scale_y_continuous(limits = c(0, 90000),
+  #                    breaks = c(0, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000)) +
+  labs(title = "Avergae Number of Children With Elevated Blood Levels by Borough", y = "Average children with elevated lead", x = "Borough") +
+  theme_minimal() 
+
+
+ggsave("ggplot2-charts/gg_avg_levels_by_borough.png",
+       gg_avg_levels_by_borough,
+       width = 12,
+       height = 8,
+       units = "cm")
+
+knitr::include_graphics("ggplot2-charts/gg_avg_levels_by_borough.png")
+```
+
+## Graph 2: Graphing the count of children with BLL of 5ug/dl or higher by borough over time.
+
+```{r, echo=FALSE}
+#make a line graph
+bll5_complete %>% 
+  ggplot(aes(x = year,
+             y = meanbll5,
+             color = Borough)) + 
+  geom_line(key_glyph = "timeseries") + #makes the lines jagged instead of smooth 
+  geom_label_repel(aes(label = ifelse(year == 2005, scales::number(meanbll5, 
+                                                                   accuracy = 1, 
+                                                                   big.mark = ","), "")), 
+                   nudge_x = -0.5, 
+                   segment.color = 'transparent', 
+                   size = 2, 
+                   show.legend = FALSE) +
+  geom_label_repel(aes(label = ifelse(year == 2016, scales::number(meanbll5, 
+                                                                   accuracy = 1, 
+                                                                   big.mark = ","), "")), 
+                   nudge_x = -0.5, 
+                   segment.color = 'transparent', 
+                   size = 2, 
+                   show.legend = FALSE) +
+scale_y_continuous(limits = c(0, 16000),
+                     breaks = c(0, 2000, 4000, 6000, 8000, 10000, 12000, 14000, 16000)) +
+scale_x_continuous(breaks = c(2005,2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016 )) +
+scale_color_manual(values = pal) + 
+labs(title = "While the count of children with elevated blood lead levels has<br>decreased in every borough from 2005 to 2016,
+     <span style='color:#D8B70A'>Brooklyn</span> continues to have the highest numbers", y = "Children with Elevated Bllod Lead Levels", x = "Year") +
+theme_minimal() +
+theme(plot.title = element_markdown(color = "gray50")) #makes the title gray
+```
+
+## Rate of children with BLL of 5ug/dl or higher by borough
+
+```{r, echo=FALSE}
+#import data 
+# leadclean <- read_csv("data/leadclean.csv")
+# 
+# #use pivot_wider to make a colomn for each individual geo_type
+# #rename "time_period" variable to "year" 
+# leadpivot <- leadclean %>% 
+#   pivot_wider(names_from = geo_type,
+#               values_from = geo_area_name) %>% 
+#   rename(year = time_period)
+# 
+# #Get the rate of children with elevated blood (bll5_rate) by boroguh 
+# leadpivot %>% 
+#   group_by(Borough) %>% 
+#   summarise (meanbll5rate = mean(bll5_rate, na.rm = TRUE))  %>% 
+#   drop_na(Borough) %>% 
+#   gt() %>% 
+#   cols_label(meanbll5rate = "Mean Elevated BLL Rate") %>% 
+#   tab_style(
+#     locations = cells_column_labels(
+#       columns = everything()
+#     ), 
+#     style = cell_text(
+#       weight = "bold",
+#       color = 
+#         "#02401B"
+#     )
+#   )
+
+msleep %>% 
+  gt()
+```
+
+# Conclusion 
+In order to gain a better understanding of this data. I decided to look at several different types of descriptive statistics across time and geographic region. The raw data has the count of children with elevated blood lead levels divided into several reference dose categories (greater than or equal to 5 ug/dl, 10 ug/dl, and 15 ug/dl). I chose to analyze the greater than or equal to 5 ug/dl variable, and that is how I define elevated BLL throughout the report. First, I explored the average number of children with elevated BLL overall by borough, and found Brooklyn to have the highest number. 
+
+In order to see if this trend was consistent over time, I explored the count of children with elevated BLL in each borough every year from 2005-2016. The results indicate that over time, even though cases in every borough have decreased, Brooklyn still has a lot more than the other boroughs. Finally, I was interested in the rate, which is calculated as the number of children who tested positive for elevated BLL out of all the children tested. I was curious to see if another borough had a faster rate of elevated BLL in children. The results suggest that Brooklyn also has the fastest rate. 
+
+# Limaitations and Future Steps 
+One limitation to this report is that the dataset I used is small and outdated. Thus,it would be good to revise analysis once NY state releases updated data. Alternatively, I could find some other supplemental data from the CDC, or another reporting agency. 
+
+For future steps, I would like to explore the data on a smaller scale, looking at chidrens’ elevated BLL by neighborhood. That way, I could see if there are any specific hotspots in Brooklyn and maybe even put the data on a map with other layers to spatially analyze trends. Because my job focuses on northern manhattan, I am also interested in seeing how the northern manhattan neighborhoods compare to other neighborhoods in the state. Finally, I can look at the other BLL reference limits to get even finer details of analysis. 
+
+
+
